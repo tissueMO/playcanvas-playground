@@ -21,16 +21,16 @@
     <p v-show="mouseMiddle">
       MM
     </p>
-    <p v-show="left">
+    <p v-show="padLeft">
       PAD←
     </p>
-    <p v-show="right">
+    <p v-show="padRight">
       PAD→
     </p>
-    <p v-show="up">
+    <p v-show="padUp">
       PAD↑
     </p>
-    <p v-show="down">
+    <p v-show="padDown">
       PAD↓
     </p>
     <canvas ref="canvas"></canvas>
@@ -100,8 +100,8 @@ export default {
     mouse.disableContextMenu();
 
     // Input: ゲームパッド
-    // const gamepads = new PlayCanvas.GamePads();
-    // console.log(gamepads.poll());
+    const gamepads = new PlayCanvas.GamePads();
+    console.log('使用可能なゲームパッド', gamepads.poll());
 
     // Script: エンティティにスクリプトコンポーネントを追加して使う
     const script = PlayCanvas.createScript('TestScript', app);
@@ -140,11 +140,11 @@ export default {
       this.mouseRight = mouse.isPressed(PlayCanvas.MOUSEBUTTON_RIGHT);
       this.mouseMiddle = mouse.isPressed(PlayCanvas.MOUSEBUTTON_MIDDLE);
 
-      // gamepads.update();
-      // this.padLeft = gamepads.isPressed(PlayCanvas.PAD_1, PlayCanvas.PAD_LEFT);
-      // this.padRight = gamepads.isPressed(PlayCanvas.PAD_1, PlayCanvas.PAD_RIGHT);
-      // this.padUp = gamepads.isPressed(PlayCanvas.PAD_1, PlayCanvas.PAD_UP);
-      // this.padDown = gamepads.isPressed(PlayCanvas.PAD_1, PlayCanvas.PAD_DOWN);
+      gamepads.update();
+      this.padLeft = gamepads.isPressed(PlayCanvas.PAD_1, PlayCanvas.PAD_LEFT);
+      this.padRight = gamepads.isPressed(PlayCanvas.PAD_1, PlayCanvas.PAD_RIGHT);
+      this.padUp = gamepads.isPressed(PlayCanvas.PAD_1, PlayCanvas.PAD_UP);
+      this.padDown = gamepads.isPressed(PlayCanvas.PAD_1, PlayCanvas.PAD_DOWN);
     });
 
     app.start();
