@@ -106,19 +106,24 @@ export default {
     // Script: エンティティにスクリプトコンポーネントを追加して使う
     const script = PlayCanvas.createScript('TestScript', app);
     script.extend({
+      /** @this PlayCanvas.ScriptType  */
       initialize () {
         console.log('初期化されます');
       },
+      /** @this PlayCanvas.ScriptType  */
       postInitialize () {
         console.log('初期化されました');
       },
+      /** @this PlayCanvas.ScriptType  */
       update (dt) {
-        box.rotate(10 * dt, 20 * dt, 30 * dt);
+        this.entity.rotate(10 * dt, 20 * dt, 30 * dt);
         // console.log('更新されます');
       },
+      /** @this PlayCanvas.ScriptType  */
       postUpdate () {
         // console.log('更新されました');
       },
+      /** @this PlayCanvas.ScriptType  */
       swap (old) {
         // 古いインスタンスも参照できる
         console.log('ホットリロードされました', old);
