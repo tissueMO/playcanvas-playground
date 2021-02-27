@@ -89,16 +89,43 @@ export default {
     app.root.addChild(light);
     light.setEulerAngles(45, 0, 0);
 
+    // Input: キーボード
     const keyboard = new PlayCanvas.Keyboard(window, {
       preventDefault: true,
       stopPropagation: true,
     });
 
+    // Input: マウス
     const mouse = new PlayCanvas.Mouse(document.body);
     mouse.disableContextMenu();
 
+    // Input: ゲームパッド
     // const gamepads = new PlayCanvas.GamePads();
     // console.log(gamepads.poll());
+
+    // Script: エンティティにスクリプトコンポーネントを追加して使う
+    const script = PlayCanvas.createScript('TestScript', app);
+    script.extend({
+      initialize () {
+        console.log('初期化されます');
+      },
+      postInitialize () {
+        console.log('初期化されました');
+      },
+      update () {
+        // console.log('更新されます');
+      },
+      postUpdate () {
+        // console.log('更新されました');
+      },
+      swap () {
+        console.log('ホットリロードされました');
+      },
+    });
+    app.scripts.add(script);
+
+    box.addComponent('script');
+    box.script.create('TestScript');
 
     // rotate the box according to the delta time since the last frame
     app.on('update', (dt) => {
