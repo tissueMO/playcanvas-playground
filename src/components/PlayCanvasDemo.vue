@@ -1,12 +1,38 @@
 <template>
   <div class="playcanvas-demo">
-    <p v-show="left">←</p>
-    <p v-show="right">→</p>
-    <p v-show="up">↑</p>
-    <p v-show="down">↓</p>
-    <p v-show="mouseLeft">ML</p>
-    <p v-show="mouseRight">MR</p>
-    <p v-show="mouseMiddle">MM</p>
+    <p v-show="left">
+      ←
+    </p>
+    <p v-show="right">
+      →
+    </p>
+    <p v-show="up">
+      ↑
+    </p>
+    <p v-show="down">
+      ↓
+    </p>
+    <p v-show="mouseLeft">
+      ML
+    </p>
+    <p v-show="mouseRight">
+      MR
+    </p>
+    <p v-show="mouseMiddle">
+      MM
+    </p>
+    <p v-show="left">
+      PAD←
+    </p>
+    <p v-show="right">
+      PAD→
+    </p>
+    <p v-show="up">
+      PAD↑
+    </p>
+    <p v-show="down">
+      PAD↓
+    </p>
     <canvas ref="canvas"></canvas>
   </div>
 </template>
@@ -24,6 +50,10 @@ export default {
       mouseLeft: false,
       mouseRight: false,
       mouseMiddle: false,
+      padLeft: false,
+      padRight: false,
+      padUp: false,
+      padDown: false,
     };
   },
   mounted () {
@@ -67,6 +97,9 @@ export default {
     const mouse = new PlayCanvas.Mouse(document.body);
     mouse.disableContextMenu();
 
+    // const gamepads = new PlayCanvas.GamePads();
+    // console.log(gamepads.poll());
+
     // rotate the box according to the delta time since the last frame
     app.on('update', (dt) => {
       box.rotate(10 * dt, 20 * dt, 30 * dt);
@@ -79,6 +112,12 @@ export default {
       this.mouseLeft = mouse.isPressed(PlayCanvas.MOUSEBUTTON_LEFT);
       this.mouseRight = mouse.isPressed(PlayCanvas.MOUSEBUTTON_RIGHT);
       this.mouseMiddle = mouse.isPressed(PlayCanvas.MOUSEBUTTON_MIDDLE);
+
+      // gamepads.update();
+      // this.padLeft = gamepads.isPressed(PlayCanvas.PAD_1, PlayCanvas.PAD_LEFT);
+      // this.padRight = gamepads.isPressed(PlayCanvas.PAD_1, PlayCanvas.PAD_RIGHT);
+      // this.padUp = gamepads.isPressed(PlayCanvas.PAD_1, PlayCanvas.PAD_UP);
+      // this.padDown = gamepads.isPressed(PlayCanvas.PAD_1, PlayCanvas.PAD_DOWN);
     });
 
     app.start();
