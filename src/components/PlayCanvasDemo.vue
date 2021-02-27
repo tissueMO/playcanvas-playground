@@ -112,14 +112,16 @@ export default {
       postInitialize () {
         console.log('初期化されました');
       },
-      update () {
+      update (dt) {
+        box.rotate(10 * dt, 20 * dt, 30 * dt);
         // console.log('更新されます');
       },
       postUpdate () {
         // console.log('更新されました');
       },
-      swap () {
-        console.log('ホットリロードされました');
+      swap (old) {
+        // 古いインスタンスも参照できる
+        console.log('ホットリロードされました', old);
       },
     });
     app.scripts.add(script);
@@ -129,8 +131,6 @@ export default {
 
     // rotate the box according to the delta time since the last frame
     app.on('update', (dt) => {
-      box.rotate(10 * dt, 20 * dt, 30 * dt);
-
       this.left = keyboard.isPressed(PlayCanvas.KEY_LEFT);
       this.right = keyboard.isPressed(PlayCanvas.KEY_RIGHT);
       this.up = keyboard.isPressed(PlayCanvas.KEY_UP);
