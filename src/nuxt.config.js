@@ -4,7 +4,7 @@ export default {
   target: 'static',
 
   head: {
-    title: 'playcanvas-playground',
+    title: 'PlayCanvasで遊んでみる',
     htmlAttrs: { lang: 'ja' },
     meta: [
       { charset: 'utf-8' },

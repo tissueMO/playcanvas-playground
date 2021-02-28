@@ -1,0 +1,2 @@
+- /src/static/sounds/ 以下
+  - [FICUSEL](https://ficusel.com/)様より拝借
