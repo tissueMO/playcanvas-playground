@@ -41,6 +41,7 @@
 
 <script>
 const PlayCanvas = require('playcanvas');
+window.engine = PlayCanvas;
 
 export default {
   data () {
@@ -79,7 +80,8 @@ export default {
       clearColor: new PlayCanvas.Color(0.1, 0.1, 0.1)
     });
     app.root.addChild(camera);
-    camera.setPosition(0, 0, 3);
+    camera.setPosition(0, 0, 10);
+    // オーディオリスナーは最後に付けられたものが有効になる
     camera.addComponent('audiolistener');
 
     // Asset: サウンド
@@ -87,23 +89,27 @@ export default {
     // 立体位置(Panpot)を無視して再生することもできる
     // box.sound.positional = false;
     box.sound.positional = true;
-    box.sound.maxDistance = 10;
+    box.sound.maxDistance = 20;
     app.assets.loadFromUrl('sounds/ficusel.mp3', 'audio', (error, asset) => {
-      if (!error) {
-        box.sound.addSlot('ficusel', {
-          asset: asset.id,
-          overlap: false,
-          autoPlay: false,
-          loop: true,
-        });
-        const sound = box.sound.play('ficusel');
-        sound.volume = 0.5;
-        // box.sound.
-        // sound.pitch = 1.5;
-        // sound.pitch = 0.5;
-      } else {
+      if (error) {
         console.error(error);
+        return;
       }
+
+      box.sound.addSlot('ficusel', {
+        asset: asset.id,
+        overlap: false,
+        autoPlay: true,
+        loop: true,
+        volume: 0,
+        // volume: 0.5,
+      });
+
+      // addSlotのautoPlayを指定せず後から手動で再生したり設定を変更することもできる
+      // const sound = box.sound.play('ficusel');
+      // sound.volume = 0.5;
+      // sound.pitch = 1.5;
+      // sound.pitch = 0.5;
     });
 
     // Entity: 光源
@@ -124,7 +130,7 @@ export default {
 
     // Input: ゲームパッド
     const gamepads = new PlayCanvas.GamePads();
-    console.log('使用可能なゲームパッド', gamepads.poll());
+    console.info('使用可能なゲームパッド', gamepads.poll());
 
     // Script: エンティティにスクリプトコンポーネントを追加して使う
     const script = PlayCanvas.createScript('TestScript', app);
@@ -134,15 +140,14 @@ export default {
     script.extend({
       /** @this PlayCanvas.ScriptType  */
       initialize () {
-        console.log('初期化されます');
+        // console.log('初期化されます');
       },
       /** @this PlayCanvas.ScriptType  */
       postInitialize () {
-        console.log('初期化されました');
+        // console.log('初期化されました');
       },
       /** @this PlayCanvas.ScriptType  */
       update (dt) {
-        this.entity.rotate(10 * dt, 20 * dt, 30 * dt);
         this.entity.setPosition(
           this.entity.getPosition().x - (turn ? -0.05 : 0.05),
           this.entity.getPosition().y,
@@ -165,15 +170,23 @@ export default {
       /** @this PlayCanvas.ScriptType  */
       swap (old) {
         // 古いインスタンスも参照できる
-        console.log('ホットリロードされました', old);
+        // console.log('ホットリロードされました', old);
       },
     });
     app.scripts.add(script);
-
     box.addComponent('script');
     box.script.create('TestScript');
 
-    // rotate the box according to the delta time since the last frame
+    // Asset: スクリプト
+    app.assets.loadFromUrl('scripts/box.js', 'script', (error, asset) => {
+      if (!error) {
+        box.script.create('boxRotate');
+      } else {
+        console.error(error);
+      }
+    });
+
+    // アプリケーショングローバルなフレーム更新
     app.on('update', () => {
       this.left = keyboard.isPressed(PlayCanvas.KEY_LEFT);
       this.right = keyboard.isPressed(PlayCanvas.KEY_RIGHT);
@@ -184,6 +197,7 @@ export default {
       this.mouseRight = mouse.isPressed(PlayCanvas.MOUSEBUTTON_RIGHT);
       this.mouseMiddle = mouse.isPressed(PlayCanvas.MOUSEBUTTON_MIDDLE);
 
+      // ゲームパッドは情報の更新が必要
       gamepads.update();
       this.padLeft = gamepads.isPressed(PlayCanvas.PAD_1, PlayCanvas.PAD_LEFT);
       this.padRight = gamepads.isPressed(PlayCanvas.PAD_1, PlayCanvas.PAD_RIGHT);
