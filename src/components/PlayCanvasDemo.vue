@@ -69,18 +69,14 @@ export default {
 
     // Entity: 立体ボックス
     const box = new PlayCanvas.Entity('cube');
-    box.addComponent('model', {
-      type: 'box'
-    });
+    box.addComponent('model', { type: 'box' });
     app.root.addChild(box);
 
     // Entity: カメラ
     const camera = new PlayCanvas.Entity('camera');
-    camera.addComponent('camera', {
-      clearColor: new PlayCanvas.Color(0.1, 0.1, 0.1)
-    });
+    camera.addComponent('camera', { clearColor: new PlayCanvas.Color(0.1, 0.1, 0.1) });
     app.root.addChild(camera);
-    camera.setPosition(0, 0, 10);
+    camera.setPosition(0, 0, 20);
     // オーディオリスナーは最後に付けられたものが有効になる
     camera.addComponent('audiolistener');
 
@@ -186,12 +182,44 @@ export default {
       }
     });
 
+    // Entity: 2Dグラフィック
+    const sprite2d = new PlayCanvas.Entity();
+    sprite2d.setPosition(0, 0, -5);
+    sprite2d.setLocalScale(0.01, 0.01, 0.01);
+    sprite2d.addComponent('sprite');
+    app.root.addChild(sprite2d);
+    app.assets.loadFromUrl('sprites/pipoya.jpg', 'texture', (error, asset) => {
+      if (!error) {
+        const textureAtlas = new PlayCanvas.TextureAtlas();
+        textureAtlas.texture = asset.resource;
+        textureAtlas.frames = {
+          1: {
+            rect: new PlayCanvas.Vec4(0, 0, 800, 600),
+            pivot: new PlayCanvas.Vec2(0.5, 0.5),
+            border: new PlayCanvas.Vec4(0, 0, 0, 0),
+          },
+        };
+        sprite2d.sprite.sprite = new PlayCanvas.Sprite(app.graphicsDevice, {
+          atlas: textureAtlas,
+          frameKeys: ['1'],
+        });
+      } else {
+        console.error(error);
+      }
+    });
+
     // アプリケーショングローバルなフレーム更新
-    app.on('update', () => {
+    app.on('update', (dt) => {
       this.left = keyboard.isPressed(PlayCanvas.KEY_LEFT);
       this.right = keyboard.isPressed(PlayCanvas.KEY_RIGHT);
       this.up = keyboard.isPressed(PlayCanvas.KEY_UP);
       this.down = keyboard.isPressed(PlayCanvas.KEY_DOWN);
+
+      sprite2d.setPosition(
+        sprite2d.getPosition().x + (this.left ? -0.1 : (this.right ? 0.1 : 0)),
+        sprite2d.getPosition().y + (this.up ? 0.1 : (this.down ? -0.1 : 0)),
+        sprite2d.getPosition().z
+      );
 
       this.mouseLeft = mouse.isPressed(PlayCanvas.MOUSEBUTTON_LEFT);
       this.mouseRight = mouse.isPressed(PlayCanvas.MOUSEBUTTON_RIGHT);
