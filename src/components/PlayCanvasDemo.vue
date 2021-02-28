@@ -60,9 +60,18 @@ export default {
     };
   },
   mounted () {
+    // Vue ホットリロード対応
+    if (window.app) {
+      /** @type PlayCanvas.Application */
+      const oldApp = window.app;
+      console.log('古いアプリケーション', oldApp);
+      oldApp.destroy();
+    }
+
     // PlayCanvas 初期化
     const canvas = this.$refs.canvas;
     const app = new PlayCanvas.Application(canvas);
+    window.app = app;
     app.setCanvasFillMode(PlayCanvas.FILLMODE_FILL_WINDOW);
     app.setCanvasResolution(PlayCanvas.RESOLUTION_AUTO);
     window.addEventListener('resize', () => app.resizeCanvas());
@@ -76,7 +85,7 @@ export default {
     const camera = new PlayCanvas.Entity('camera');
     camera.addComponent('camera', { clearColor: new PlayCanvas.Color(0.1, 0.1, 0.1) });
     app.root.addChild(camera);
-    camera.setPosition(0, 0, 20);
+    camera.setPosition(0, 0, 10);
     // オーディオリスナーは最後に付けられたものが有効になる
     camera.addComponent('audiolistener');
 
@@ -164,9 +173,10 @@ export default {
         // console.log('更新されました');
       },
       /** @this PlayCanvas.ScriptType  */
+      /** @param {PlayCanvas.ScriptType} old */
       swap (old) {
         // 古いインスタンスも参照できる
-        // console.log('ホットリロードされました', old);
+        console.log('ホットリロードされました', old);
       },
     });
     app.scripts.add(script);
