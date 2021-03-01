@@ -6543,10 +6543,10 @@ pkg-dir@^4.1.0:
   dependencies:
     find-up "^4.0.0"
 
-playcanvas@^1.39.2:
-  version "1.39.2"
-  resolved "https://registry.yarnpkg.com/playcanvas/-/playcanvas-1.39.2.tgz#37279087a27c8f6718b7b712a5f721ec9bcb6121"
-  integrity sha512-ZsRWQAyBs/nhImWx/Zh3V/279VjIVHg74J1giwCeTXazzsoukAd4eF9RwUJbR+HvwKqVSTyvFQ6BNtNqfG+Okw==
+playcanvas@^1.39.4:
+  version "1.39.4"
+  resolved "https://registry.yarnpkg.com/playcanvas/-/playcanvas-1.39.4.tgz#3e9af4be8861302fdb4c3291817cb8e99b437619"
+  integrity sha512-Punv/ioNkWejfPQevEadYiQ9qQe4M4mYYG13uyCWCjhExsD32E9fV24igKue6ASJjVW0i3EiaN5Nu6HNaM6BGA==
 
 pluralize@^8.0.0:
   version "8.0.0"

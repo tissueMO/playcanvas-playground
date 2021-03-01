@@ -1,2 +1,4 @@
+- /src/static/fonts/ 以下
+  - Copyright (C) 2002-2017 M+ FONTS PROJECT
 - /src/static/sounds/ 以下
   - [FICUSEL](https://ficusel.com/)様より拝借

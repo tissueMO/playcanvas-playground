@@ -43,6 +43,10 @@
 const PlayCanvas = require('playcanvas');
 window.engine = PlayCanvas;
 
+function resizeHandler () {
+  window.app.resizeCanvas();
+}
+
 export default {
   data () {
     return {
@@ -72,9 +76,10 @@ export default {
     const canvas = this.$refs.canvas;
     const app = new PlayCanvas.Application(canvas);
     window.app = app;
-    app.setCanvasFillMode(PlayCanvas.FILLMODE_FILL_WINDOW);
-    app.setCanvasResolution(PlayCanvas.RESOLUTION_AUTO);
-    window.addEventListener('resize', () => app.resizeCanvas());
+    app.setCanvasResolution(PlayCanvas.RESOLUTION_AUTO, 1920, 1080);
+    app.setCanvasFillMode(PlayCanvas.FILLMODE_KEEP_ASPECT);
+    window.removeEventListener('resize', resizeHandler);
+    window.addEventListener('resize', resizeHandler);
 
     // Entity: 立体ボックス
     const box = new PlayCanvas.Entity('cube');
@@ -193,29 +198,71 @@ export default {
     });
 
     // Entity: 2Dグラフィック
-    const sprite2d = new PlayCanvas.Entity();
+    const sprite2d = new PlayCanvas.Entity('sprite');
     sprite2d.setPosition(0, 0, -5);
     sprite2d.setLocalScale(0.01, 0.01, 0.01);
     sprite2d.addComponent('sprite');
     app.root.addChild(sprite2d);
     app.assets.loadFromUrl('sprites/pipoya.jpg', 'texture', (error, asset) => {
       if (!error) {
+        /** @type PlayCanvas.Texture */
+        const texture = asset.resource;
         const textureAtlas = new PlayCanvas.TextureAtlas();
-        textureAtlas.texture = asset.resource;
+        textureAtlas.texture = texture;
         textureAtlas.frames = {
           1: {
-            rect: new PlayCanvas.Vec4(0, 0, 800, 600),
+            rect: new PlayCanvas.Vec4(0, 0, texture.width, texture.height),
             pivot: new PlayCanvas.Vec2(0.5, 0.5),
             border: new PlayCanvas.Vec4(0, 0, 0, 0),
           },
         };
         sprite2d.sprite.sprite = new PlayCanvas.Sprite(app.graphicsDevice, {
           atlas: textureAtlas,
-          frameKeys: ['1'],
+          frameKeys: [1],
         });
       } else {
         console.error(error);
       }
+    });
+
+    // Entity: スクリーン
+    const screen = new PlayCanvas.Entity('screen');
+    screen.addComponent('screen');
+    screen.screen.referenceResolution = new PlayCanvas.Vec2(1920, 1080);
+    screen.screen.screenSpace = true;
+    screen.screen.scaleMode = PlayCanvas.SCALEMODE_BLEND;
+    app.root.addChild(screen);
+
+    // Entity: UIテキスト
+    const text = new PlayCanvas.Entity('text');
+    screen.addChild(text);
+
+    // 動的にフォントをロード
+    const fontFace = new FontFace('mplus', 'url(fonts/mplus-1m-regular.ttf)');
+    const textCharacters = '0123456789';
+    document.fonts.add(fontFace);
+    fontFace.load().then(() => {
+      // 動的にフォントビットマップを生成する
+      const font = new PlayCanvas.CanvasFont(app, {
+        fontName: 'mplus',
+        fontSize: 128,
+      });
+      font.createTextures(textCharacters);
+
+      // 生成したフォントを使ってUIテキストを作る
+      text.addComponent('element', {
+        // 右下固定
+        anchor: new PlayCanvas.Vec4(1, 0, 1, 0),
+        // 右下起点
+        pivot: new PlayCanvas.Vec2(1, 0),
+        // 起点からのオフセット
+        right: 30,
+
+        font,
+        fontSize: 96,
+        text: textCharacters,
+        type: PlayCanvas.ELEMENTTYPE_TEXT,
+      });
     });
 
     // アプリケーショングローバルなフレーム更新

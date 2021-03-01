@@ -11,7 +11,7 @@
   "dependencies": {
     "core-js": "^3.8.3",
     "nuxt": "^2.14.12",
-    "playcanvas": "^1.39.2"
+    "playcanvas": "^1.39.4"
   },
   "devDependencies": {
     "@babel/preset-env": "7.12.17",
