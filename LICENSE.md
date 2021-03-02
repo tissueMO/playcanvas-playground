@@ -9,5 +9,5 @@
   - [Creava's Nest](http://creava.cocolog-nifty.com/) Creava様より拝借
 - [tile.png](/src/static/textures/tile.png)
   - REFMAP様より拝借
-- [pipoya.jpg](/src/static/textures/pipoya.jpg]
+- [pipoya.jpg](/src/static/textures/pipoya.jpg)
   - [ぴぽや](https://pipoya.net/sozai/)様より拝借
