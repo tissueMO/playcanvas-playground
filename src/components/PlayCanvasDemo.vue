@@ -198,12 +198,12 @@ export default {
     });
 
     // Entity: 2Dグラフィック
-    const sprite2d = new PlayCanvas.Entity('sprite');
+    const sprite2d = new PlayCanvas.Entity('sprite2D');
     sprite2d.setPosition(0, 0, -5);
     sprite2d.setLocalScale(0.01, 0.01, 0.01);
     sprite2d.addComponent('sprite');
     app.root.addChild(sprite2d);
-    app.assets.loadFromUrl('sprites/pipoya.jpg', 'texture', (error, asset) => {
+    app.assets.loadFromUrl('textures/pipoya.jpg', 'texture', (error, asset) => {
       if (!error) {
         /** @type PlayCanvas.Texture */
         const texture = asset.resource;
@@ -213,13 +213,57 @@ export default {
           1: {
             rect: new PlayCanvas.Vec4(0, 0, texture.width, texture.height),
             pivot: new PlayCanvas.Vec2(0.5, 0.5),
-            border: new PlayCanvas.Vec4(0, 0, 0, 0),
           },
         };
         sprite2d.sprite.sprite = new PlayCanvas.Sprite(app.graphicsDevice, {
           atlas: textureAtlas,
           frameKeys: [1],
         });
+      } else {
+        console.error(error);
+      }
+    });
+
+    // Entity: アニメーションスプライト
+    const sprite2dAnimation = new PlayCanvas.Entity('sprite2DAnimation');
+    sprite2dAnimation.setPosition(5, 0, -5);
+    sprite2dAnimation.setLocalScale(0.1, 0.1, 0.1);
+    sprite2dAnimation.addComponent('sprite', {
+      type: PlayCanvas.SPRITETYPE_ANIMATED,
+    });
+    app.root.addChild(sprite2dAnimation);
+    app.assets.loadFromUrl('textures/tile.png', 'texture', (error, asset) => {
+      if (!error) {
+        /** @type PlayCanvas.Texture */
+        const texture = asset.resource;
+        const textureAtlas = new PlayCanvas.TextureAtlas();
+        textureAtlas.texture = texture;
+        textureAtlas.frames = {
+          1: {
+            rect: new PlayCanvas.Vec4(32 * 0, 352, 32, 32),
+            pivot: new PlayCanvas.Vec2(0, 1),
+          },
+          2: {
+            rect: new PlayCanvas.Vec4(32 * 2, 352, 32, 32),
+            pivot: new PlayCanvas.Vec2(0, 1),
+          },
+          3: {
+            rect: new PlayCanvas.Vec4(32 * 4, 352, 32, 32),
+            pivot: new PlayCanvas.Vec2(0, 1),
+          },
+        };
+
+        // アニメーションクリップを作成
+        const clip = sprite2dAnimation.sprite.addClip({
+          name: 'tile',
+          loop: true,
+          fps: 3,
+        });
+        clip.sprite = new PlayCanvas.Sprite(app.graphicsDevice, {
+          atlas: textureAtlas,
+          frameKeys: [1, 2, 3],
+        });
+        sprite2dAnimation.sprite.play('tile');
       } else {
         console.error(error);
       }
@@ -258,10 +302,47 @@ export default {
         // 起点からのオフセット
         right: 30,
 
+        type: PlayCanvas.ELEMENTTYPE_TEXT,
         font,
         fontSize: 96,
         text: textCharacters,
-        type: PlayCanvas.ELEMENTTYPE_TEXT,
+      });
+    });
+
+    // Entity: 9スライススプライト
+    const sprite2D9Slicing = new PlayCanvas.Entity('sprite2D9Slicing');
+    screen.addChild(sprite2D9Slicing);
+    app.assets.loadFromUrl('textures/window.png', 'texture', (error, asset) => {
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      /** @type PlayCanvas.Texture */
+      const texture = asset.resource;
+      const textureAtlas = new PlayCanvas.TextureAtlas();
+      textureAtlas.texture = texture;
+      textureAtlas.frames = {
+        1: {
+          rect: new PlayCanvas.Vec4(64, 64, 64, 64),
+          pivot: new PlayCanvas.Vec2(0, 1),
+          border: new PlayCanvas.Vec4(32, 32, 32, 32),
+        },
+      };
+
+      sprite2D9Slicing.addComponent('element', {
+        type: PlayCanvas.ELEMENTTYPE_IMAGE,
+        // 右下固定
+        anchor: new PlayCanvas.Vec4(0, 1, 0, 1),
+        // 右下起点
+        pivot: new PlayCanvas.Vec2(0, 1),
+        width: 500,
+        height: 300,
+        sprite: new PlayCanvas.Sprite(app.graphicsDevice, {
+          atlas: textureAtlas,
+          frameKeys: [1],
+          renderMode: PlayCanvas.SPRITE_RENDERMODE_SLICED,
+        }),
       });
     });
 

@@ -2,3 +2,9 @@
   - Copyright (C) 2002-2017 M+ FONTS PROJECT
 - /src/static/sounds/ 以下
   - [FICUSEL](https://ficusel.com/)様より拝借
+- /src/static/textures/window.png
+  - [Creava's Nest](http://creava.cocolog-nifty.com/) Creava様より拝借
+- /src/static/textures/tile.png
+  - REFMAP様より拝借
+- /src/static/textures/tile.png
+  - [ぴぽや](https://pipoya.net/sozai/)様より拝借
